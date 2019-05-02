@@ -12,8 +12,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import com.qqxhb.springboot.entity.Order;
-
 @Component
 public class RabbitSender {
 
@@ -32,7 +30,6 @@ public class RabbitSender {
 			}
 		}
 	};
-	
 	//回调函数: return返回
 	final ReturnCallback returnCallback = new RabbitTemplate.ReturnCallback() {
 		@Override
@@ -46,21 +43,12 @@ public class RabbitSender {
 	//发送消息方法调用: 构建Message消息
 	public void send(Object message, Map<String, Object> properties) throws Exception {
 		MessageHeaders mhs = new MessageHeaders(properties);
-		Message<Object> msg = MessageBuilder.createMessage(message, mhs);
+		Message msg = MessageBuilder.createMessage(message, mhs);
 		rabbitTemplate.setConfirmCallback(confirmCallback);
 		rabbitTemplate.setReturnCallback(returnCallback);
 		//id + 时间戳 全局唯一 
 		CorrelationData correlationData = new CorrelationData("1234567890");
 		rabbitTemplate.convertAndSend("exchange-1", "springboot.abc", msg, correlationData);
-	}
-	
-	//发送消息方法调用: 构建自定义对象消息
-	public void sendOrder(Order order) throws Exception {
-		rabbitTemplate.setConfirmCallback(confirmCallback);
-		rabbitTemplate.setReturnCallback(returnCallback);
-		//id + 时间戳 全局唯一 
-		CorrelationData correlationData = new CorrelationData("0987654321");
-		rabbitTemplate.convertAndSend("exchange-2", "springboot.def", order, correlationData);
 	}
 	
 }
