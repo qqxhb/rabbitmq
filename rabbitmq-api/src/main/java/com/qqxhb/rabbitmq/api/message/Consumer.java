@@ -1,11 +1,9 @@
 package com.qqxhb.rabbitmq.api.message;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
+import com.qqxhb.rabbitmq.api.consumer.MyConsumer;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.QueueingConsumer;
-import com.rabbitmq.client.QueueingConsumer.Delivery;
 
 public class Consumer {
 
@@ -31,17 +29,6 @@ public class Consumer {
 		String queueName = "quickstart";
 		channel.queueDeclare(queueName, true, false, false, null);
 
-		QueueingConsumer consumer = new QueueingConsumer(channel);
-
-		channel.basicConsume(queueName, true, consumer);
-
-		while (true) {
-			Delivery delivery = consumer.nextDelivery();
-			String msg = new String(delivery.getBody());
-			System.out.println("message：" + msg);
-			BasicProperties properties = delivery.getProperties();
-			System.out.println("propertie of encoding：" + properties.getContentEncoding());
-			System.out.println("my headers：" + properties.getHeaders());
-		}
+		channel.basicConsume(queueName, true,new MyConsumer(channel));
 	}
 }
