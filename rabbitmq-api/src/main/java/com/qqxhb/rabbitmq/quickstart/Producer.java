@@ -9,7 +9,7 @@ import com.rabbitmq.client.ConnectionFactory;
  * producer。
  * 
  */
-public class Procuder {
+public class Producer {
 
 	public static void main(String[] args) throws Exception {
 		/*
